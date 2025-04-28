@@ -5,6 +5,9 @@
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixos-facter-modules = {
+      url = "github:numtide/nixos-facter-modules";
+    };
   };
   outputs = (
     inputs@{
@@ -36,7 +39,8 @@
               modules = [
                 ./machines/${machine}/configuration.nix
                 inputs.disko.nixosModules.disko
-                ./machines/${machine}/hardware-configuration.nix
+                inputs.nixos-facter-modules.nixosModules.facter
+                # { config.facter.reportPath = ./facter.json; }
                 ./machines/${machine}/disk.nix
                 { imports = builtins.attrValues self.nixosModules; }
               ];
