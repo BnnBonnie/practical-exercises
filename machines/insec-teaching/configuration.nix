@@ -8,6 +8,7 @@
   ];
 
   my.serverBase.enable = true;
+  networking.useDHCP = false;
 
   users = {
     mutableUsers = false;
@@ -29,4 +30,7 @@
       };
     };
   };
+  environment.systemPackages = with pkgs; [
+    python3
+  ];
 }

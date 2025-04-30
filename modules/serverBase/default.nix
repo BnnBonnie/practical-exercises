@@ -43,6 +43,10 @@ in {
         LC_TIME = "en_DK.UTF-8";
       };
     };
+
+    services = {
+      openssh.enable = true;
+    };
     
     users = {
       users = {
@@ -55,8 +59,7 @@ in {
     environment.systemPackages = with pkgs; [
       emacs-nox
       git      
-      nvim
-      python3
+      neovim
       toybox
     ];
   };
