@@ -20,7 +20,10 @@ in {
       "flakes"
     ];
     system.stateVersion = data.stateVersion;
-    networking.hostName = data.hostName;
+    networking = {
+      hostName = data.hostName;
+      firewall.allowedTCPPorts = [ 22 ];
+    };
 
     boot = {
       loader = {

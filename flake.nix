@@ -40,7 +40,7 @@
                 ./machines/${machine}/configuration.nix
                 inputs.disko.nixosModules.disko
                 inputs.nixos-facter-modules.nixosModules.facter
-                { config.facter.reportPath = ./facter.json; }
+                { config.facter.reportPath = ./machines/${machine}/facter.json; }
                 ./machines/${machine}/disk.nix
                 { imports = builtins.attrValues self.nixosModules; }
               ];
