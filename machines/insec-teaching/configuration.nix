@@ -9,22 +9,47 @@
   ];
 
   my.serverBase.enable = true;
-  networking.useDHCP = false;
+  networking = {
+    useDHCP = false;
+    defaultGateway = {
+      address = "130.149.221.222";
+      interface = "enX0";
+    };
+    interfaces.enX0 = {
+      ipv4 = {
+        addresses = [
+          {
+            address = "130.149.221.218";
+            prefixLength = 27;
+          }
+        ];
+        routes = [
+          {
+            address = "130.149.221.192";
+            prefixLength = 27;
+          }
+        ];
+      };
+    };
+    nameservers = [
+      "9.9.9.9"
+    ];
+  };
 
   boot = {
-      loader = {
-        systemd-boot.enable = lib.mkForce false;
-        grub = {
-          enable = true;
-          device = "nodev";
-          efiSupport = true;
-          useOSProber = true;
-          efiInstallAsRemovable = true;
-        };
-        efi.canTouchEfiVariables = lib.mkForce false;
+    loader = {
+      systemd-boot.enable = lib.mkForce false;
+      grub = {
+        enable = true;
+        device = "nodev";
+        efiSupport = true;
+        useOSProber = true;
+        efiInstallAsRemovable = true;
       };
-      growPartition = true;
+      efi.canTouchEfiVariables = lib.mkForce false;
     };
+    growPartition = true;
+  };
 
   users = {
     mutableUsers = false;
