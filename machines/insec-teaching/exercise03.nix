@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   ...
 }: {
   networking = {
@@ -11,6 +12,18 @@
     firewall = {
       allowedTCPPorts = [ 80 443 ];
       allowedUDPPorts = [ config.networking.wireguard.interfaces.wg-insec.listenPort ];
+      extraCommands = ''
+        iptables -A OUTPUT -p all -m owner --uid-owner insecguest -d 127.0.0.1 -j ACCEPT
+        iptables -A OUTPUT -p all -m owner --uid-owner insecguest -d 10.100.0.0/24 -j ACCEPT
+        iptables -A OUTPUT -p all -m owner --uid-owner insecguest -j DROP
+        ip6tables -A OUTPUT -p all -m owner --uid-owner insecguest -j DROP
+      '';
+      extraStopCommands = ''
+        iptables -D OUTPUT -p all -m owner --uid-owner insecguest -d 127.0.0.1 -j ACCEPT || true
+        iptables -D OUTPUT -p all -m owner --uid-owner insecguest -d 10.100.0.0/24 -j ACCEPT || true
+        iptables -D OUTPUT -p all -m owner --uid-owner insecguest -j DROP || true
+        ip6tables -D OUTPUT -p all -m owner --uid-owner insecguest -j DROP || true
+      '';
     };
     wireguard.interfaces = {
       wg-insec = {
@@ -23,31 +36,33 @@
       #   ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.100.0.0/24 -o enX0 -j MASQUERADE
       # '';
         privateKeyFile = "/root/wireguard-keys/private";
-        peers = [
-          {
-            publicKey = "+CNroCuPJLV+EM1x+ll8P5yntAKxyDNKKeHah805gXc=";
-            allowedIPs = [ "10.100.0.1/32" ];
-          }
-        ];
-           # map (strings: {attr1 = builtins.elemAt strings 0; attr2 = builtins.elemAt strings 1;}) (map (lib.strings.splitString " ") (lib.strings.splitString "\n" (builtins.readFile ./wireguard-peers)));
+        peers = (
+          lib.lists.imap1
+          (
+            i:
+            key:
+            { publicKey = key; allowedIPs = [ "10.100.0.${toString i}" ]; }
+          )
+          (lib.strings.splitString "\n" (builtins.readFile ./wireguard-peers))
+        );
       };
     };
   };
-  # services = {
-  #   nginx = {
-  #     enable = true;
-  #     recommendedProxySettings = true;
-  #     virtualHosts = {
-  #       "crypto.nocrypto" = {
-  #         locations."/" = {
-  #           return = "200 '<html><body>Crypto good or crypto bad?</body></html>'";
-  #           extraConfig = ''
-  #             allow 10.100.0.0/24;
-  #             deny all;
-  #           '';
-  #         };
-  #       };
-  #     };
-  #   };
-  # };
+  services = {
+    nginx = {
+      enable = true;
+      recommendedProxySettings = true;
+      virtualHosts = {
+        "crypto.nocrypto" = {
+          root = "/var/www/crypto.nocrypto/"; # please make within nix next!
+          locations."/" = {            
+            extraConfig = ''
+              allow 10.100.0.0/24;
+              deny all;
+            '';
+          };
+        };
+      };
+    };
+  };
 }

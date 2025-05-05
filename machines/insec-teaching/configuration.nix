@@ -30,7 +30,7 @@
       "9.9.9.9"
     ];
   };
-
+  
   boot = {
     loader = {
       systemd-boot.enable = lib.mkForce false;
@@ -63,6 +63,14 @@
         extraGroups = [
           "wheel"
         ];
+        openssh.authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdEFX7/vv+sZPi9tI8F/2M3HCKM0T0bCoYOIUjRTLxC berber@fox"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJmT7ak1rBQqSq+TNcrHep5QdHs3Aq1PpZV6RY3QbAH2 berber@peach"
+        ];
+      };
+      insecguest = {
+        isNormalUser = true;
+        homeMode = "500";
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAdEFX7/vv+sZPi9tI8F/2M3HCKM0T0bCoYOIUjRTLxC berber@fox"
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJmT7ak1rBQqSq+TNcrHep5QdHs3Aq1PpZV6RY3QbAH2 berber@peach"
