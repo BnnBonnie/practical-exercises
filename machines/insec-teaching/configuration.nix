@@ -23,12 +23,6 @@
             prefixLength = 27;
           }
         ];
-        # routes = [
-        #   {
-        #     address = "130.149.221.192";
-        #     prefixLength = 27;
-        #   }
-        # ];
       };
     };
     nameservers = [
