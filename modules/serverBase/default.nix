@@ -52,6 +52,9 @@ in {
         enable = true;
         settings.PasswordAuthentication = false;
       };
+      fail2ban = {
+        enable = true;
+      };
     };
     
     users = {
@@ -62,6 +65,9 @@ in {
         };
       };
     };
+    nix.settings.allowed-users = [
+      "@wheel"
+    ];
     environment.systemPackages = with pkgs; [
       emacs-nox
       git      
