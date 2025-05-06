@@ -41,20 +41,25 @@
           (
             i:
             key:
-            { publicKey = key; allowedIPs = [ "10.100.0.${toString i}" ]; }
+            { publicKey = key; allowedIPs = [ "10.100.0.${toString i}/32" ]; }
           )
           (lib.strings.splitString "\n" (builtins.readFile ./wireguard-peers))
         );
       };
     };
   };
+  users.users.insecguest = {
+    isNormalUser = true;
+    homeMode = "500";
+    openssh.authorizedKeys.keys = lib.strings.splitString "\n" (builtins.readFile ./ssh-keys);
+  };
   services = {
     nginx = {
       enable = true;
       recommendedProxySettings = true;
       virtualHosts = {
-        "crypto.nocrypto" = {
-          root = "/var/www/crypto.nocrypto/"; # please make within nix next!
+        "isthis.crypto" = {
+          root = "/var/www/isthis.crypto/"; # please make reproducible within nix next!
           locations."/" = {            
             extraConfig = ''
               allow 10.100.0.0/24;
@@ -63,6 +68,11 @@
           };
         };
       };
+    };
+    meme-bingo-web = {
+      enable = true;
+      baseUrl = "http://localhost:41678/";
+      port = 41678;
     };
   };
 }
