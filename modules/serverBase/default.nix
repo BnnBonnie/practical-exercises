@@ -62,6 +62,9 @@ in {
         };
       };
     };
+    nix.allowed-users = [
+      "@wheel"
+    ];
     environment.systemPackages = with pkgs; [
       emacs-nox
       git      
