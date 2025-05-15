@@ -7,6 +7,7 @@
 }: {
   imports = [
     ./exercise03.nix
+    ./exercise04.nix
   ];
 
   my.serverBase.enable = true;
@@ -29,6 +30,22 @@
     nameservers = [
       "9.9.9.9"
     ];
+    firewall = {
+      allowedTCPPorts = [ 80 443 ];
+      allowedUDPPorts = [ config.networking.wireguard.interfaces.wg-insec.listenPort ];
+      extraCommands = ''
+        iptables -A OUTPUT -p all -m owner --uid-owner insecguest -d 127.0.0.1 -j ACCEPT
+        iptables -A OUTPUT -p all -m owner --uid-owner insecguest -d 10.7.0.0/24 -j ACCEPT
+        iptables -A OUTPUT -p all -m owner --uid-owner insecguest -j DROP
+        ip6tables -A OUTPUT -p all -m owner --uid-owner insecguest -j DROP
+      '';
+      extraStopCommands = ''
+        iptables -D OUTPUT -p all -m owner --uid-owner insecguest -d 127.0.0.1 -j ACCEPT || true
+        iptables -D OUTPUT -p all -m owner --uid-owner insecguest -d 10.7.0.0/24 -j ACCEPT || true
+        iptables -D OUTPUT -p all -m owner --uid-owner insecguest -j DROP || true
+        ip6tables -D OUTPUT -p all -m owner --uid-owner insecguest -j DROP || true
+      '';
+    };
   };
   
   boot = {
