@@ -11,7 +11,7 @@
     };
     wireguard.interfaces = {
       wg-insec = {
-        ips = [ "10.7.0.255/24" ];
+        ips = [ "10.7.0.254/24" ];
         listenPort = 51820;
       #   postSetup = ''
       #   ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.100.0.0/24 -o enX0 -j MASQUERADE
