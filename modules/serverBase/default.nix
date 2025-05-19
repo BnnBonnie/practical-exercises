@@ -52,6 +52,9 @@ in {
         enable = true;
         settings.PasswordAuthentication = false;
       };
+      fail2ban = {
+        enable = true;
+      };
     };
     
     users = {
@@ -62,7 +65,11 @@ in {
         };
       };
     };
+<<<<<<< HEAD
     nix.allowed-users = [
+=======
+    nix.settings.allowed-users = [
+>>>>>>> bb8e8fe3d04e7e81cb997d3ddb5b2e94f29c5c8d
       "@wheel"
     ];
     environment.systemPackages = with pkgs; [
