@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   lib,
   ...
@@ -43,8 +44,8 @@
       recommendedProxySettings = true;
       virtualHosts = {
         "isthis.crypto" = {
-          root = "/var/www/isthis.crypto/"; # please make reproducible within nix next!
-          locations."/" = {            
+          locations."/" = {
+            root = "${pkgs.callPackage ./isthis.crypto.nix {}}";
             extraConfig = ''
               allow 10.7.0.0/24;
               deny all;
